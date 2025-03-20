@@ -1,0 +1,203 @@
+/*
+ * __        __          _                  ____  _         _
+ * \ \      / /_ _ _   _| |__   __ _ _ __  / ___|| |_ _   _| | ___
+ *  \ \ /\ / / _` | | | | '_ \ / _` | '__| \___ \| __| | | | |/ _ \
+ *   \ V  V / (_| | |_| | |_) | (_| | |     ___) | |_| |_| | |  __/
+ *    \_/\_/ \__,_|\__, |_.__/ \__,_|_|    |____/ \__|\__, |_|\___|
+ *                 |___/                              |___/
+ *
+ * by Stephan Raabe (2023)
+ * Edited by Pilk (2024) :3c
+ * -----------------------------------------------------
+ */
+
+/* -----------------------------------------------------
+ * Import Pywal colors
+ * ----------------------------------------------------- */
+/* @import 'style-light.css'; */
+@define-color backgroundlight #FFFFFF;
+@define-color backgrounddark #FFFFFF;
+@define-color workspacesbackground1 #FFFFFF;
+@define-color workspacesbackground2 #CCCCCC;
+@define-color bordercolor #35D6E7;
+@define-color textcolor1 #000000;
+@define-color textcolor2 #000000;
+@define-color textcolor3 #FFFFFF;
+@define-color iconcolor #FFFFFF;
+@define-color backend1 #080809;
+
+/* -----------------------------------------------------
+ * General
+ * ----------------------------------------------------- */
+
+
+
+* {
+    font-family: "Fira Sans Semibold", "Font Awesome 6 Free", DroidSansMNerdFont, FontAwesome, awesomefont, Roboto, Helvetica, Arial, "fontawesome-free-6.6.0", sans-serif;
+    border: none;
+    border-radius: 0px;
+
+}
+
+window#waybar {
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 10px 0 0 0;
+   /* border: 2px solid @bordercolor;
+     Enable border by removing these > */
+    border-radius: 15px 15px;
+
+}
+
+/* -----------------------------------------------------
+ * Workspaces 
+ * ----------------------------------------------------- */
+
+#workspaces {
+    margin: 6px 1px 6px 1px;
+    padding: 0px 5px;
+    border-radius: 15px;
+    border: 0px;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 16px;
+    color: @textcolor1;
+}
+
+#workspaces button {
+    padding: 0px 5px;
+    margin: 4px 3px;
+    border-radius: 15px;
+    border: 0px;
+    color: @textcolor3;
+    transition: all 0.3s ease-in-out;
+}
+
+#workspaces button.active {
+    color: @textcolor1;
+    background: @workspacesbackground2;
+    border-radius: 15px;
+    min-width: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+#workspaces button:hover {
+    color: @textcolor1;
+    background: @workspacesbackground2;
+    border-radius: 15px;
+}
+
+/* -----------------------------------------------------
+ * Modules
+ * ----------------------------------------------------- */
+
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 5;
+}
+
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
+
+#custom-waybarthemes,#custom-system {
+     margin-right:15px;
+}
+
+/* -----------------------------------------------------
+ * Custom Exit
+ * ----------------------------------------------------- */
+
+#custom-exit {
+    margin: 0px 20px 0px 0px;
+    padding:0px;
+    font-size:20px;
+    color: @iconcolor;
+}
+
+
+/* -----------------------------------------------------
+ * Hardware Group
+ * ----------------------------------------------------- */
+
+#disk {
+    margin:0px;
+    padding:0px;
+    font-size:18px;
+    color:@iconcolor;
+}
+
+#custom-spotify {
+    margin: 1px 0px 0px 0px;
+    padding:0px;
+    font-size:18px;
+    color: @iconcolor;
+}
+
+#custom-pipewire {
+    margin: 1px 0px 0px 0px;
+    padding:0px;
+    font-size:18px;
+    color: @iconcolor;
+}
+
+#cpu {
+    margin: 1px 0px 0px 0px;
+    padding:0px;
+    font-size:18px;
+    color: @iconcolor;
+}
+
+#memory {
+    margin: 1px 0px 0px 0px;
+    padding:0px;
+    font-size:18px;
+    color: @iconcolor;
+}
+#language {
+    margin-right:10px;
+}
+
+/* -----------------------------------------------------
+ * Clock/Date
+ * ----------------------------------------------------- */
+
+#clock {
+    margin: 10px 15px 10px 0px;
+    font-size: 18px;
+    color: @textcolor0;
+
+}
+
+/* -----------------------------------------------------
+ * Battery
+ * ----------------------------------------------------- */
+
+#battery {
+    background-color: @backgroundlight;
+    font-size: 16px;
+    color: @textcolor2;
+    border-radius: 15px;
+    padding: 2px 15px 0px 10px;
+    margin: 10px 15px 10px 0px;
+}
+
+#battery.charging, #battery.plugged {
+    color: @textcolor2;
+    background-color: @backgroundlight;
+}
+
+@keyframes blink {
+    to {
+        background-color: @backgroundlight;
+        color: @textcolor2;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: @textcolor3;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}

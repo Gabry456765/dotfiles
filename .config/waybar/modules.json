@@ -1,0 +1,130 @@
+//  __  __           _       _            
+// |  \/  | ___   __| |_   _| | ___  ___  
+// | |\/| |/ _ \ / _` | | | | |/ _ \/ __| 
+// | |  | | (_) | (_| | |_| | |  __/\__ \ 
+// |_|  |_|\___/ \__,_|\__,_|_|\___||___/ 
+//                                        
+//  
+// by Stephan Raabe (2023) 
+// Edited by Pilk (2024) :3c
+// Edited v2 by Ksawlii (2025) ;p
+// ----------------------------------------------------- 
+//
+{
+    // Workspaces
+    "hyprland/workspaces" : {
+        "on-click": "activate",
+        "active-only": false,
+        "all-outputs": true,
+        "format": "{}",
+        "format-icons": {
+			"urgent": "",
+			"active": "",
+			"default": ""
+        }
+    },
+
+    // Power Menu
+    "custom/exit": {
+        "format": "",
+        "on-click": "wlogout",
+        "tooltip": false
+    },
+
+    // Clock
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%R %a %d %b}",
+        "on-click": "ags -t calendar",
+        "tooltip": false
+    },
+
+    // CPU
+    "cpu": {
+        "format": "   {usage}%   ",
+        "on-click": "alacritty -e btop"
+    },
+
+    // Memory
+    "memory": {
+        "format": "   {}%   ",
+        "on-click": "alacritty -e btop"
+    },
+
+    // Harddisc space used
+    "disk": {
+        "interval": 30,
+        "format": "  {percentage_used}%   ",
+        "path": "/",
+        "on-click": "alacritty -e htop"
+    }, 
+
+    "hyprland/language": {
+        "format": "/ K {short}"
+    },
+
+    // Battery
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}   {capacity}%",
+        "format-charging": "  {capacity}%",
+        "format-plugged": "  {capacity}%",
+        "format-alt": "{icon}{time}",
+        "format-icons": [" ", " ", " ", " ", " "]
+    },
+
+    // Pipewire
+    "custom/pipewire": {
+        "tooltip": false,
+        "restart-interval": 10,
+        "exec": "exec $HOME/.config/waybar/pw-volume-monitor.bash"
+   },
+
+   // Spotify
+    "custom/spotify": {
+        "exec": "/usr/bin/python3 $HOME/.config/waybar/mediaplayer.py --player spotify",
+        "format": "{}  ",
+        "return-type": "json",
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
+
+    // PlayerPause
+    "custom/playerpause": {
+        "format": "⏯︎",
+        "on-click": "playerctl play-pause",
+        "tooltip": false,
+
+    // WaybarMedia
+    },
+    "modules-center": ["custom/waybar-media"],
+    "custom/waybar-media": {
+        "return-type": "json",
+        "exec": "waybar-media.py status",
+        "on-click": "waybar-media.py playpause",
+        "on-scroll-up": "waybar-media.py previous",
+        "on-scroll-down": "waybar-media.py next",
+        "escape": true
+    },
+
+    // PlayerNext
+    "custom/playernext": {
+        "format": "⏵︎",
+        "on-click": "playerctl next",
+        "tooltip": false,
+
+    },
+
+    // PlayerPrevious
+    "custom/playerprevious": {
+        "format": "⏴︎",
+        "on-click": "playerctl previous",
+        "tooltip": false,
+
+    },
+}
