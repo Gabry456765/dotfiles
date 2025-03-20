@@ -71,7 +71,7 @@ case $choice in
      
     echo ""
     if ask_ny "Do you want to install dependencies (very recommended)?"; then
-      paru -Syu \
+      yay -Syu --noconfirm --needed \
       hyprland waybar rofi python-pipx alacritty xdg-desktop-portal \
       gtk2 gtk3 nwg-look fastfetch zsh grim satty xdg-desktop-portal-gtk swaybg \
       xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr \
@@ -110,6 +110,9 @@ fi
 # Oh My Posh
 if [ ! -f "$HOME/.local/bin/oh-my-posh" ]; then
   echo "Oh My Posh Not Found. Installing..."
+  if [ ! -d "$HOME/.local/bin/" ]; then
+    mkdir -p "$HOME/.local/bin/"
+  fi
   curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$HOME/.local/bin/"
 fi
 echo ""
@@ -130,7 +133,7 @@ if [ ! -d "$HOME/nerd-fonts/" ]; then
     wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
     wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
     wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
-    cp "MesloLGS\ NF\ *.ttf" "$HOME/.local/share/fonts/NerdFonts/"
+    mv MesloLGS\ NF\ * "$HOME/.local/share/fonts/NerdFonts/"
     rm -rf "$HOME/nerd-fonts"
   else
     echo "Skipping Nerd Fonts installation..."
