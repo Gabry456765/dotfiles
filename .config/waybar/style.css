@@ -8,6 +8,7 @@
  *
  * by Stephan Raabe (2023)
  * Edited by Pilk (2024) :3c
+ * Edited v2 by Ksawlii (2025) :p
  * -----------------------------------------------------
  */
 
@@ -125,12 +126,6 @@ window#waybar {
     color:@iconcolor;
 }
 
-#custom-spotify {
-    margin: 1px 0px 0px 0px;
-    padding:0px;
-    font-size:18px;
-    color: @iconcolor;
-}
 
 #custom-pipewire {
     margin: 1px 0px 0px 0px;
