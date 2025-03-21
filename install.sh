@@ -95,6 +95,14 @@ case $choice in
     else
       echo "Skipping dependency installation..."
     fi
+    if [ -f "/usr/share/wayland-sessions/hyprland.desktop" ]; then
+      echo ""
+      echo "Patching hyprland.desktop to run with dbus"
+      "$ROOT" patch -p1 -d "/usr/share/wayland-sessions/" < "patches/0001-Run-hyprland-with-dbus.patch"
+    else
+      echo "ERROR: /usr/share/wayland-sessions/hyprland.desktop not found!"
+      exit 1
+    fi
     ;;
   *)
     echo "Invalid choice. Please try again."
