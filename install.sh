@@ -132,6 +132,7 @@ if [ ! -d "$(pwd)/.config" ]; then
   mv "$(pwd)/configs" ".config"
 fi
 if [ -d "$(pwd)/.config" ]; then
+  echo "INFO: Copying .config folder"
   cp -rf "$(pwd)/.config" "$HOME/"
 else
   if [ -d "$(pwd)/.config" ]; then
@@ -141,6 +142,7 @@ else
   fi
 fi
 if [ -f "$(pwd)/.config/zsh/zshrc" ]; then
+  echo "INFO: Copying zshrc"
   cp -rf "$(pwd)/.config/zsh/zshrc" "$HOME/.zshrc"
 fi
 if [ -d "$(pwd)/.config" ]; then
