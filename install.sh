@@ -16,21 +16,6 @@ ask_ny() {
   done
 }
 
-ask_choice() {
-  local prompt="$1"
-  local options="$2"
-  local choice
-  while true; do
-    read -p "$prompt " choice
-      if [[ $options == *"$choice"* ]]; then
-        echo "$choice"
-        return
-      else
-        echo "Invalid choice. Please try again."
-      fi
-  done
-}
-
 error() {
   echo "ERROR: $1" >&2
   exit 1
@@ -41,7 +26,7 @@ warning() {
 }
 
 info() {
-   echo "INFO: $1" >&2
+  echo "INFO: $1" >&2
 }
 
 if [ "$EUID" -eq 0 ]; then
@@ -59,43 +44,11 @@ fi
 warning "Make sure you have $HOME/.config/ and .zsh* backup!"
 sleep 2
 
-# Main selection of distro
-choice=$(ask_choice "Which distro do you have?: (1) Arch Linux, (2) Gentoo Linux:" "1 2")
-
-case $choice in
-  1)
-    echo ""
-    # Enable multilib if not already enabled
-    if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
-      info "Enabling multilib repository..."
-      echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | "$ROOT" tee -a /etc/pacman.conf
-      "$ROOT" pacman -Syu
-    fi
-    if [ ! -f "/usr/bin/yay" ]; then
-      echo ""
-      info "Yay not installed. Installing yay (AUR helper)..."
-      "$ROOT" pacman -Syu --needed base-devel git
-      git clone "https://aur.archlinux.org/yay.git" "$HOME/.yay"
-      cd "$HOME/.yay"
-      makepkg -si
-      rm -rf "$HOME/.yay"
-    fi
-     
-    echo ""
-    if ask_ny "Do you want to install dependencies (very recommended)?"; then
-      yay -Syu --noconfirm --needed \
-      hyprland waybar rofi python-pipx alacritty xdg-desktop-portal \
-      gtk2 gtk3 nwg-look fastfetch zsh grim satty xdg-desktop-portal-gtk swaybg \
-      xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr
-    else
-      warning "Skipping dependencies installation"
-      SKIPPED="1"
-    fi
-    ;;
-  2)
-    # Dependencies
-    echo ""
-    if ask_ny "Do you want to install dependencies (very recommended)?"; then 
+if grep -q "gentoo" "/etc/os-release"; then
+  echo ""
+  info "Gentoo Linux detected"
+  echo ""
+  if ask_ny "Do you want to install dependencies (very recommended)?"; then 
     "$ROOT" emerge -navq eselect-repository
     "$ROOT" eselect repository enable librewolf kzd guru steam-overlay
     "$ROOT" emerge --sync
@@ -105,24 +58,52 @@ case $choice in
             hyprland wlogout waybar rofi neovim xdg-desktop-portal swaybg \
             dev-python/pipx thunar alacritty dev-perl/Gtk2 wl-clipboard swaylock \
             dev-perl/Gtk3 xcur2png nwg-look fastfetch zsh grim slurp satty wlroots xdg-desktop-portal-gtk xdg-desktop-portal-wlr
+  else
+    warning "Skipping dependencies installation"
+    SKIPPED="1"
+  fi
+  if ! grep -q "Exec=dbus-run-session Hyprland" /usr/share/wayland-sessions/hyprland.desktop; then
+    if [ -f "/usr/share/wayland-sessions/hyprland.desktop" ]; then
+      echo ""
+      info "Patching hyprland.desktop to run with dbus"
+      "$ROOT" patch -p1 -d "/usr/share/wayland-sessions/" < "patches/0001-Run-hyprland-with-dbus.patch"
     else
-      warning "Skipping dependencies installation"
-      SKIPPED="1"
+      error "/usr/share/wayland-sessions/hyprland.desktop not found!"
     fi
-    if ! grep -q "Exec=dbus-run-session Hyprland" /usr/share/wayland-sessions/hyprland.desktop; then
-      if [ -f "/usr/share/wayland-sessions/hyprland.desktop" ]; then
-        echo ""
-        info "Patching hyprland.desktop to run with dbus"
-        "$ROOT" patch -p1 -d "/usr/share/wayland-sessions/" < "patches/0001-Run-hyprland-with-dbus.patch"
-      else
-        error "/usr/share/wayland-sessions/hyprland.desktop not found!"
-      fi
-    fi
-    ;;
-  *)
-    echo "Invalid choice. Please try again."
-    ;;
-esac
+  fi
+elif grep -q "arch" "/etc/os-release"; then
+  echo ""
+  info "Arch Linux detected"
+  echo ""
+  # Enable multilib if it's not already enabled
+  if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
+    info "Enabling multilib repository..."
+    echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | "$ROOT" tee -a /etc/pacman.conf
+    "$ROOT" pacman -Syu
+  fi
+  if [ ! -f "/usr/bin/yay" ]; then
+    echo ""
+    info "Yay not installed. Installing yay (AUR helper)..."
+    "$ROOT" pacman -Syu --needed base-devel git
+    git clone "https://aur.archlinux.org/yay.git" "$HOME/.yay"
+    cd "$HOME/.yay"
+    makepkg -si
+    rm -rf "$HOME/.yay"
+  fi
+   
+  echo ""
+  if ask_ny "Do you want to install dependencies (very recommended)?"; then
+    yay -Syu --noconfirm --needed \
+    hyprland waybar rofi python-pipx alacritty xdg-desktop-portal \
+    gtk2 gtk3 nwg-look fastfetch zsh grim satty xdg-desktop-portal-gtk swaybg \
+    xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr
+  else
+    warning "Skipping dependencies installation"
+    SKIPPED="1"
+  fi
+else
+  error "Your distro is not supported"
+fi
 
 # Oh My Zsh
 if [ ! "$SKIPPED" = "1" ]; then
