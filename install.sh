@@ -157,13 +157,16 @@ if [ -d "$(pwd)/.config" ]; then
 else
   if [ -d "$(pwd)/.config" ]; then
     mv "$(pwd)/.config" "$(pwd)/configs"
-    error ".config folder not found"
   fi
+  error ".config folder not found"
 fi
 if [ -f "$(pwd)/.config/zsh/zshrc" ]; then
   echo "Copying zshrc"
   cp -rf "$(pwd)/.config/zsh/zshrc" "$HOME/.zshrc"
 else
+  if [ -d "$(pwd)/.config" ]; then
+    mv "$(pwd)/.config" "$(pwd)/configs"
+  fi
   error "zshrc not found!"
 fi
 if [ -d "$(pwd)/.config" ]; then
