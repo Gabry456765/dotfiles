@@ -1,11 +1,10 @@
 #!/bin/bash
 set -e
 
-if [ "$EUID" -eq 0 ]; then
-  echo "This script should not be run as root. Please run it as a regular user."
-  exit 1
-fi
+# Unset some variables
+unset SKIPPED NOT_FOUND ROOT
 
+# Commands (ig ;p)
 ask_ny() {
   while true; do
       read -p "$1 (y/n): " ny
@@ -32,16 +31,32 @@ ask_choice() {
   done
 }
 
-if [ -f "/etc/doas.conf" ]; then
-  export ROOT="doas"
-elif [ -f "/usr/bin/sudo" ]; then
-  export ROOT="sudo"
-else
-  echo "Doas and sudo not found. Install doas or sudo!"
-  exit 1
+error() {
+    echo "ERROR: $1" >&2
+    exit 1
+}
+
+warning() {
+    echo "WARNING: $1" >&2
+}
+
+info() {
+    echo "INFO: $1" >&2
+}
+
+if [ "$EUID" -eq 0 ]; then
+  error "This script should not be run as root. Please run it as a regular user."
 fi
 
-echo "Make sure you have $HOME/.config/ and .zsh* backup!"
+if [ -f "/etc/doas.conf" ]; then
+  ROOT="doas"
+elif [ -f "/usr/bin/sudo" ]; then
+  ROOT="sudo"
+else
+  error "Doas and sudo not found. Install doas or sudo!"
+fi
+
+warning "Make sure you have $HOME/.config/ and .zsh* backup!"
 sleep 2
 
 # Main selection of distro
@@ -52,16 +67,13 @@ case $choice in
     echo ""
     # Enable multilib if not already enabled
     if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
-      echo "Enabling multilib repository..."
+      info "Enabling multilib repository..."
       echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | "$ROOT" tee -a /etc/pacman.conf
       "$ROOT" pacman -Syu
-    else
-      echo "Multilib repository is already enabled."
-      sleep 2
     fi
     if [ ! -f "/usr/bin/yay" ]; then
       echo ""
-      echo "Yay not installed. Installing yay (AUR helper)..."
+      info "Yay not installed. Installing yay (AUR helper)..."
       "$ROOT" pacman -Syu --needed base-devel git
       git clone "https://aur.archlinux.org/yay.git" "$HOME/.yay"
       cd "$HOME/.yay"
@@ -74,35 +86,36 @@ case $choice in
       yay -Syu --noconfirm --needed \
       hyprland waybar rofi python-pipx alacritty xdg-desktop-portal \
       gtk2 gtk3 nwg-look fastfetch zsh grim satty xdg-desktop-portal-gtk swaybg \
-      xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr \
+      xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr
     else
-      echo "Skipping dependency installation..."          
+      warning "Skipping dependencies installation"
+      SKIPPED="1"
     fi
     ;;
   2)
     # Dependencies
     echo ""
-    if ask_ny "Do you want to install dependencies (very recommended)?"; then
+    if ask_ny "Do you want to install dependencies (very recommended)?"; then 
     "$ROOT" emerge -navq eselect-repository
     "$ROOT" eselect repository enable librewolf kzd guru steam-overlay
     "$ROOT" emerge --sync
-    "$ROOT" cp -rf ./gentoo/package.accept_keywords/ /etc/portage/
-    "$ROOT" cp -rf ./gentoo/package.use/ /etc/portage/
+    "$ROOT" cp -rf "$(pwd)/gentoo/package.accept_keywords/" "/etc/portage/"
+    "$ROOT" cp -rf "$(pwd)/gentoo/package.use/" "/etc/portage/"
     "$ROOT" emerge -navq \
             hyprland wlogout waybar rofi neovim xdg-desktop-portal swaybg \
             dev-python/pipx thunar alacritty dev-perl/Gtk2 wl-clipboard swaylock \
-            dev-perl/Gtk3 xcur2png nwg-look fastfetch zsh grim slurp satty wlroots xdg-desktop-portal-gtk xdg-desktop-portal-wlr \
+            dev-perl/Gtk3 xcur2png nwg-look fastfetch zsh grim slurp satty wlroots xdg-desktop-portal-gtk xdg-desktop-portal-wlr
     else
-      echo "Skipping dependency installation..."
+      warning "Skipping dependencies installation"
+      SKIPPED="1"
     fi
     if ! grep -q "Exec=dbus-run-session Hyprland" /usr/share/wayland-sessions/hyprland.desktop; then
       if [ -f "/usr/share/wayland-sessions/hyprland.desktop" ]; then
         echo ""
-        echo "Patching hyprland.desktop to run with dbus"
+        info "Patching hyprland.desktop to run with dbus"
         "$ROOT" patch -p1 -d "/usr/share/wayland-sessions/" < "patches/0001-Run-hyprland-with-dbus.patch"
       else
-        echo "ERROR: /usr/share/wayland-sessions/hyprland.desktop not found!"
-        exit 1
+        error "/usr/share/wayland-sessions/hyprland.desktop not found!"
       fi
     fi
     ;;
@@ -112,38 +125,46 @@ case $choice in
 esac
 
 # Oh My Zsh
-echo ""
+if [ ! "$SKIPPED" = "1" ]; then
+  echo ""
+  unset SKIPPED
+fi
 if [ ! -d "$HOME/.oh-my-zsh/" ]; then
-  echo "Oh My Zsh Not found. Installing..."
+  info "Oh My Zsh Not found. Installing..."
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
 fi
 # Oh My Posh
 if [ ! -f "$HOME/.local/bin/oh-my-posh" ]; then
-  echo "Oh My Posh Not Found. Installing..."
+  info "Oh My Posh Not Found. Installing..."
   if [ ! -d "$HOME/.local/bin/" ]; then
     mkdir -p "$HOME/.local/bin/"
   fi
   curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$HOME/.local/bin/"
+  NOT_FOUND="1"
 fi
-echo ""
-echo "Copying dotfiles files..."
+if [ ! "$NOT_FOUND" = "1" ]; then
+  echo ""
+  unset NOT_FOUND
+fi
+echo "Copying dotfiles files"
 sleep 1
 if [ ! -d "$(pwd)/.config" ]; then
   mv "$(pwd)/configs" ".config"
 fi
 if [ -d "$(pwd)/.config" ]; then
-  echo "INFO: Copying .config folder"
+  echo "Copying .config folder"
   cp -rf "$(pwd)/.config" "$HOME/"
 else
   if [ -d "$(pwd)/.config" ]; then
     mv "$(pwd)/.config" "$(pwd)/configs"
-    echo "ERROR: .config folder not found"
-    exit 1
+    error ".config folder not found"
   fi
 fi
 if [ -f "$(pwd)/.config/zsh/zshrc" ]; then
-  echo "INFO: Copying zshrc"
+  echo "Copying zshrc"
   cp -rf "$(pwd)/.config/zsh/zshrc" "$HOME/.zshrc"
+else
+  error "zshrc not found!"
 fi
 if [ -d "$(pwd)/.config" ]; then
   mv "$(pwd)/.config" "$(pwd)/configs"
@@ -164,8 +185,9 @@ if [ ! -d "$HOME/nerd-fonts/" ]; then
     mv MesloLGS\ NF\ * "$HOME/.local/share/fonts/NerdFonts/"
     rm -rf "$HOME/nerd-fonts"
   else
-    echo "Skipping Nerd Fonts installation..."
+    warning "Skipping Nerd Fonts installation"
   fi
 fi
 sleep 1
 echo "Done!"
+exit 0
