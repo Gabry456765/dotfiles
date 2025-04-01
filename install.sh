@@ -129,7 +129,7 @@ echo ""
 echo "Copying dotfiles files..."
 sleep 1
 cp -rf ./.config/ ~/
-cp -rf ./.config/.zshrc ~/.zshrc
+cp -rf ./.config/zsh/zshrc ~/.zshrc
 sleep 1
 
 # Nerd Fonts
