@@ -4,12 +4,24 @@ if [ -f "/etc/doas.conf" ]; then
 elif [ -f "/usr/bin/sudo" ]; then
   export ROOT="sudo"
 else
-  echo "WARNING: Doas and sudo not found. Install doas or sudo!"
+  echo "WARNING: Doas and sudo not found!"
 fi
 export QT_QPA_PLATFORM="wayland"
-export EDITOR="nvim"
-export BROWSER="/usr/bin/librewolf"
-export VISUAL="nvim"
+if [ -f "/usr/bin/nvim" ]; then
+  export EDITOR="nvim"
+  export VISUAL="nvim" 
+elif [ -f "/usr/bin/vim" ]; then
+  export EDITOR="vim"
+  export VISUAL="vim"
+elif [ -f "/usr/bin/nano" ]; then
+  export EDITOR="nano"
+  export VISUAL="nano"
+else
+  echo "WARNING: neovim, vim and nano not found!"
+fi
+if [ -f "/usr/bin/librewolf" ]; then
+  export BROWSER="/usr/bin/librewolf" 
+fi
 export PATH="$PATH:$HOME/.bin:$HOME/.local/bin"
 
 # Flatpak
@@ -37,62 +49,65 @@ POSH=agnoster
 eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/EDM115-newline.omp.json)"
 
 # Aliases
-    # sdcard encrypt
-    alias mount-sd="mountpoint-sdcrypt; $ROOT cryptsetup open /dev/sda3 sdcard-encrypted; $ROOT mount /dev/mapper/sdcard-encrypted /mnt/sdcard-encrypted"
-    alias umount-sd="$ROOT umount /mnt/sdcard-encrypted; $ROOT cryptsetup close sdcard-encrypted; "
+# sdcard encrypt
+alias mount-sd="mountpoint-sdcrypt; $ROOT cryptsetup open /dev/sda3 sdcard-encrypted; $ROOT mount /dev/mapper/sdcard-encrypted /mnt/sdcard-encrypted"
+alias umount-sd="$ROOT umount /mnt/sdcard-encrypted; $ROOT cryptsetup close sdcard-encrypted; "
 
-    # portage
-    alias ins="$ROOT emerge -navq"
-    alias sup="$ROOT emerge --sync; $ROOT emerge -avq --changed-use --newuse --update --deep @world"
-    alias up="$ROOT emerge -avq --changed-use --newuse --update --deep @world"
-    alias qsup="$ROOT emerge --sync; $ROOT emerge -av --changed-use --newuse --update --deep @world"
-    alias qup="$ROOT emerge -av --changed-use --newuse --update --deep @world"
-    alias mc="$ROOT nvim /etc/portage/make.conf"
+if grep -q "gentoo" "/etc/os-release"; then
+  # portage
+  alias ins="$ROOT emerge -navq"
+  alias sup="$ROOT emerge --sync; $ROOT emerge -avq --changed-use --newuse --update --deep @world"
+  alias up="$ROOT emerge -avq --changed-use --newuse --update --deep @world"
+  alias mc="$ROOT $EDITOR /etc/portage/make.conf" 
+elif grep -q "arch" "/etc/os-release"; then
+  alias ins="$ROOT pacman -S --needed --noconfirm"
+  alias up="$ROOT pacman -Syyuu --needed --noconfirm"
+fi
 
-    # basic (doas, ls, etc.)
-    alias l="ls"
-    alias la="ls -a"
-    alias s="$ROOT"
-    alias scp="$ROOT cp -r"
-    alias svim="$ROOT nvim"
-    alias catboys="cat"
-    alias rm="$ROOT rm -rf"
-    alias v="nvim"
-    alias d="$ROOT"
+# basic (doas, ls, etc.)
+alias l="ls"
+alias la="ls -a"
+alias s="$ROOT"
+alias scp="$ROOT cp -r"
+alias catboys="cat"
+alias rm="$ROOT rm -rf"
+alias v="$EDITOR"
+alias d="$ROOT rm -rf"
 
-    # Android Dev Stuff
-    alias sync="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags"
-    alias b="make bacon -j$(nproc --all)"
+# Android Dev Stuff
+alias sync="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags"
+alias b="make bacon -j$(nproc --all)"
 
-    # git
-    alias gcl="git clone -j$(nproc --all)"
-    alias gad="git add"
-    alias gcm="git commit -s -m"
-    alias gra="git remote add"
-    alias gpu="git push -u"
-    alias gin="git init"
-    alias gbr="git branch"
-    alias gpl="git pull -j$(nproc --all)"
-    alias gru="git remote update"
-    alias gcp="git cherry-pick -s"
-    alias gccp="git cherry-pick --continue"
-    alias gst="git status"
-    alias grm="git remote remove"
-    alias gck="git checkout"
-    alias grv="git revert -s"
-    alias grs="git revert --skip"
-    alias grb="git revert --abort"
-    alias gcs="git cherry-pick --skip"
-    alias grn="git revert --no-edit -S -s"
-    alias gco="git commit -s"
-    alias gca="git commit -s --amend"
-    alias gmr="git merge -S --signoff --log"
-    alias gms="git merge --skip"
-    alias gma="git merge --abort"
+# git
+alias gcl="git clone -j$(nproc --all)"
+alias gad="git add"
+alias gcm="git commit -s -m"
+alias gra="git remote add"
+alias gpu="git push -u"
+alias gin="git init"
+alias gbr="git branch"
+alias gpl="git pull -j$(nproc --all)"
+alias gru="git remote update"
+alias gcp="git cherry-pick -s"
+alias gccp="git cherry-pick --continue"
+alias gst="git status"
+alias grm="git remote remove"
+alias gck="git checkout"
+alias grv="git revert -s"
+alias grc="git revert --continue"
+alias grs="git revert --skip"
+alias grb="git revert --abort"
+alias gcs="git cherry-pick --skip"
+alias grn="git revert --no-edit -S -s"
+alias gco="git commit -s"
+alias gca="git commit -s --amend"
+alias gmr="git merge -S --signoff --log"
+alias gms="git merge --skip"
+alias gma="git merge --abort"
 
-    # zsh
-    alias zshrc="$EDITOR ~/.zshrc"
-    alias zsh="source ~/.zshrc"
+# zsh
+alias zshrc="$EDITOR ~/.zshrc"
+alias zsh="source ~/.zshrc"
 
 # Commands
 command_not_found_handler() {
@@ -107,19 +122,21 @@ mountpoint-sdcrypt () {
  fi
 }
 
-# Startup
-fastfetch
+# Fastfetch
+if [ -f "/usr/bin/fastfetch" ]; then
+  fastfetch  
+fi
 
-# Ccache
+# ccache
 if [ -f "/usr/bin/ccache" ]; then
-  export "USE_CCACHE=1"
-  export "CCACHE_EXEC=/usr/bin/ccache"
+  export USE_CCACHE="1"
+  export CCACHE_EXEC="/usr/bin/ccache"
   if [ ! -d "$HOME/.ccache" ]; then
     mkdir -p "$HOME/.ccache/"
     export CCACHE_DIR="/home/ksawlii/.ccache"  
   fi
 else
-  export "USE_CCACHE=0"
+  export USE_CCACHE="0"
 fi
 
 # History
