@@ -45,7 +45,7 @@ echo "Make sure you have $HOME/.config/ and .zsh* backup!"
 sleep 2
 
 # Main selection of distro
-choice=$(ask_choice "Which distro do you have?: (1) Arch Linux, (2) Gentoo Linux" "1 2")
+choice=$(ask_choice "Which distro do you have?: (1) Arch Linux, (2) Gentoo Linux:" "1 2")
 
 case $choice in
   1)
