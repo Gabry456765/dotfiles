@@ -128,8 +128,24 @@ fi
 echo ""
 echo "Copying dotfiles files..."
 sleep 1
-cp -rf ./.config/ ~/
-cp -rf ./.config/zsh/zshrc ~/.zshrc
+if [ ! -d "$(pwd)/.config" ]; then
+  mv "$(pwd)/configs" ".config"
+fi
+if [ -d "$(pwd)/.config" ]; then
+  cp -rf "$(pwd)/.config" "$HOME/"
+else
+  if [ -d "$(pwd)/.config" ]; then
+    mv "$(pwd)/.config" "$(pwd)/configs"
+    echo "ERROR: .config folder not found"
+    exit 1
+  fi
+fi
+if [ -f "$(pwd)/.config/zsh/zshrc" ]; then
+  cp -rf "$(pwd)/.config/zsh/zshrc" "$HOME/.zshrc"
+fi
+if [ -d "$(pwd)/.config" ]; then
+  mv "$(pwd)/.config" "$(pwd)/configs"
+fi
 sleep 1
 
 # Nerd Fonts
