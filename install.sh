@@ -7,12 +7,12 @@ unset SKIPPED NOT_FOUND ROOT
 # Commands (ig ;p)
 ask_ny() {
   while true; do
-      read -p "$1 (y/n): " ny
-      case $ny in
-          [Yy]* ) return 0;;
-          [Nn]* ) return 1;;
+    read -p "$1 (y/n): " ny
+    case $ny in
+      [Yy]* ) return 0;;
+      [Nn]* ) return 1;;
           * ) echo "Please answer y or n.";;
-      esac
+    esac
   done
 }
 
@@ -21,27 +21,27 @@ ask_choice() {
   local options="$2"
   local choice
   while true; do
-      read -p "$prompt " choice
+    read -p "$prompt " choice
       if [[ $options == *"$choice"* ]]; then
-          echo "$choice"
-          return
+        echo "$choice"
+        return
       else
-          echo "Invalid choice. Please try again."
+        echo "Invalid choice. Please try again."
       fi
   done
 }
 
 error() {
-    echo "ERROR: $1" >&2
-    exit 1
+  echo "ERROR: $1" >&2
+  exit 1
 }
 
 warning() {
-    echo "WARNING: $1" >&2
+  echo "WARNING: $1" >&2
 }
 
 info() {
-    echo "INFO: $1" >&2
+   echo "INFO: $1" >&2
 }
 
 if [ "$EUID" -eq 0 ]; then
