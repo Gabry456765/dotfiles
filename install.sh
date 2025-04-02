@@ -112,7 +112,20 @@ if [ ! "$SKIPPED" = "1" ]; then
 fi
 if [ ! -d "$HOME/.oh-my-zsh/" ]; then
   info "Oh My Zsh Not found. Installing..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &> /dev/null
+fi
+# Oh My Zsh Plugins
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-completions/" ]; then
+  info "zsh-completions plugin not found. Installing..."
+  git clone "https://github.com/zsh-users/zsh-completions" "$HOME/.oh-my-zsh/custom/plugins/zsh-completions" &> /dev/null
+fi
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/" ]; then
+  info "zsh-syntax-highlighting plugin not found. Installing..."
+  git clone "https://github.com/zsh-users/zsh-syntax-highlighting" "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" &> /dev/null
+fi
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-history-substring-search/" ]; then
+  info "zsh-history-substring-search plugin not found. Installing..."
+  git clone "https://github.com/zsh-users/zsh-history-substring-search" "$HOME/.oh-my-zsh/custom/plugins/zsh-history-substring-search" &> /dev/null
 fi
 # Oh My Posh
 if [ ! -f "$HOME/.local/bin/oh-my-posh" ]; then
@@ -120,7 +133,7 @@ if [ ! -f "$HOME/.local/bin/oh-my-posh" ]; then
   if [ ! -d "$HOME/.local/bin/" ]; then
     mkdir -p "$HOME/.local/bin/"
   fi
-  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$HOME/.local/bin/"
+  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$HOME/.local/bin/" &> /dev/null
   NOT_FOUND="1"
 fi
 if [ ! "$NOT_FOUND" = "1" ]; then
