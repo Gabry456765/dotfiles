@@ -42,6 +42,11 @@
     "hyprland/workspaces",
     ],
 
+    // Modules Center
+    "modules-center": [
+        "custom/spotify",
+    ],
+
     // Modules Right    
     "modules-right": [
         "custom/pipewire",
