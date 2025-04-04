@@ -53,7 +53,7 @@
         {
             "type": "title",
             "key": "  ",
-            "keyColor": "white"
+            "keyColor": "magenta"
         },
         {
             "type": "custom",
