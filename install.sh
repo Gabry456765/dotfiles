@@ -16,6 +16,10 @@ ask_ny() {
   done
 }
 
+command_checker() {
+  command -v "$1" &>/dev/null
+}
+
 error() {
   echo "ERROR: $1" >&2
   exit 1
@@ -33,9 +37,9 @@ if [ "$EUID" -eq 0 ]; then
   error "This script should not be run as root. Please run it as a regular user."
 fi
 
-if [ -f "/etc/doas.conf" ]; then
+if [ -f "/etc/doas.conf" ] && "command_checker" "doas"; then
   ROOT="doas"
-elif [ -f "/usr/bin/sudo" ]; then
+elif "command_checker" "sudo"; then
   ROOT="sudo"
 else
   error "Doas and sudo not found. Install doas or sudo!"
@@ -81,7 +85,7 @@ elif grep -q "arch" "/etc/os-release"; then
     echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | "$ROOT" tee -a /etc/pacman.conf
     "$ROOT" pacman -Syu
   fi
-  if [ ! -f "/usr/bin/yay" ]; then
+  if ! "command_checker" "yay"; then
     echo ""
     info "Yay not installed. Installing yay (AUR helper)..."
     "$ROOT" pacman -Syu --needed base-devel git
@@ -128,7 +132,7 @@ if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-history-substring-search/" ]; the
   git clone "https://github.com/zsh-users/zsh-history-substring-search" "$HOME/.oh-my-zsh/custom/plugins/zsh-history-substring-search" &> /dev/null
 fi
 # Oh My Posh
-if [ ! -f "$HOME/.local/bin/oh-my-posh" ]; then
+if ! "command_checker" "oh-my-posh"; then
   info "Oh My Posh Not Found. Installing..."
   if [ ! -d "$HOME/.local/bin/" ]; then
     mkdir -p "$HOME/.local/bin/"
