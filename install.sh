@@ -66,15 +66,16 @@ if grep -q "gentoo" "/etc/os-release"; then
     warning "Skipping dependencies installation"
     SKIPPED="1"
   fi
-  if ! grep -q "Exec=dbus-run-session Hyprland" /usr/share/wayland-sessions/hyprland.desktop; then
-    if [ -f "/usr/share/wayland-sessions/hyprland.desktop" ]; then
+  if [ -f "/usr/share/wayland-sessions/hyprland.desktop" ]; then
+    if ! grep -q "Exec=dbus-run-session Hyprland" /usr/share/wayland-sessions/hyprland.desktop; then
       echo ""
       info "Patching hyprland.desktop to run with dbus"
       "$ROOT" patch -p1 -d "/usr/share/wayland-sessions/" < "patches/0001-Run-hyprland-with-dbus.patch"
-    else
-      error "/usr/share/wayland-sessions/hyprland.desktop not found!"
     fi
+  else
+    warn "/usr/share/wayland-sessions/hyprland.desktop not found. Skipping 0001-Run-hyprland-with-dbus.patch"
   fi
+
 elif grep -q "arch" "/etc/os-release"; then
   echo ""
   info "Arch Linux detected"
