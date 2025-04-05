@@ -5,9 +5,10 @@ A very clean look for hyprland. As well as my first ever rice 🤓
 
 Special thanks to [PilkDrinker](https://github.com/PilkDrinker) for this README.md and base waybar
 
-## Screenshot
+## Screenshots
 ### ![alt text](https://github.com/Ksawlii/dotfiles/blob/hypr/screenshots/1.png)
 
+### ![alt text](https://github.com/Ksawlii/dotfiles/blob/hypr/screenshots/2.png)
 
 
 
