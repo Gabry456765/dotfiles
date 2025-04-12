@@ -101,7 +101,7 @@ elif grep -q "arch" "/etc/os-release"; then
     yay -Syu --noconfirm --needed \
     hyprland waybar rofi python-pipx alacritty xdg-desktop-portal neovim \
     gtk2 gtk3 nwg-look fastfetch zsh grim satty xdg-desktop-portal-gtk swaybg thunar \
-    xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr
+    xcur2png gsettings-qt slurp wlogout wl-clipboard xdg-desktop-portal-wlr
   else
     warning "Skipping dependencies installation"
     SKIPPED="1"
