@@ -60,7 +60,7 @@ if grep -q "gentoo" "/etc/os-release"; then
     "$ROOT" cp -rf "$(pwd)/gentoo/package.use/" "/etc/portage/"
     "$ROOT" emerge -navq \
             hyprland wlogout waybar rofi neovim xdg-desktop-portal swaybg \
-            dev-python/pipx thunar alacritty dev-perl/Gtk2 wl-clipboard swaylock thunar neovim \
+            dev-python/pipx thunar alacritty dev-perl/Gtk2 wl-clipboard swaylock \
             dev-perl/Gtk3 xcur2png nwg-look fastfetch zsh grim slurp satty wlroots xdg-desktop-portal-gtk xdg-desktop-portal-wlr
   else
     warning "Skipping dependencies installation"
@@ -101,7 +101,7 @@ elif grep -q "arch" "/etc/os-release"; then
     yay -Syu --noconfirm --needed \
     hyprland waybar rofi python-pipx alacritty xdg-desktop-portal neovim \
     gtk2 gtk3 nwg-look fastfetch zsh grim satty xdg-desktop-portal-gtk swaybg thunar \
-    xcur2png gsettings-qt slurp wlogout thunar neovim wl-clipboard xdg-desktop-portal-wlr
+    xcur2png gsettings-qt slurp wlogout wl-clipboard xdg-desktop-portal-wlr
   else
     warning "Skipping dependencies installation"
     SKIPPED="1"
