@@ -24,12 +24,9 @@ vim.g.maplocalleader = "\\"
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = {
-    { "neoclide/coc.nvim", branch = "release" },
     { "prisma/vim-prisma" },
     { "leafOfTree/vim-svelte-plugin" },
-    { "daltonmenezes/aura-theme", rtp = "packages/neovim" },
     { "goolord/alpha-nvim" },
-    { "elkowar/yuck.vim" },
     { "nvim-lualine/lualine.nvim" },
     { "nvim-tree/nvim-web-devicons" },
     { "L3MON4D3/LuaSnip" },
@@ -41,17 +38,14 @@ require("lazy").setup({
     { "mrcjkb/rustaceanvim" },
     { "leafgarland/typescript-vim" },
     { "peitalin/vim-jsx-typescript" },
-    { "laktak/tome" },
     { "scottmckendry/cyberdream.nvim" },
     { "sbdchd/neoformat" },
     { "lervag/vimtex" },
     { "sakhnik/nvim-gdb" },
     { "OXY2DEV/markview.nvim" },
-    { "Yggdroot/indentLine" },
     { "tpope/vim-commentary" },
     { "yuttie/comfortable-motion.vim" },
     { "mrloop/telescope-git-branch.nvim" },
-    { "tris203/precognition.nvim" },
     { "folke/noice.nvim" },
     { "MunifTanjim/nui.nvim" },
     { "rcarriga/nvim-notify" },
@@ -72,7 +66,6 @@ require("lazy").setup({
     { "windwp/nvim-autopairs" },
     { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
     { "nvim-treesitter/nvim-treesitter", dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" } },
-    { 'dasupradyumna/midnight.nvim', lazy = false },
   },
   checker = { enabled = false },
 })
@@ -167,10 +160,10 @@ require("nvim-autopairs").setup{}
 
 -- Treesitter
 require("nvim-treesitter.configs").setup {
-  ensure_installed = { "lua", "python", "html", "css" },
-  highlight = { enable = true },
-  indent = { enable = true },
-  textobjects = { enable = true },
+ ensure_installed = { "lua", "python", "html", "css" },
+ highlight = { enable = true },
+ indent = { enable = true },
+ textobjects = { enable = true },
 }
 
 -- Telescope
@@ -246,7 +239,6 @@ vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = t
 vim.keymap.set("n", "<Space>e", function()
   vim.cmd("wincmd p")
 end, { noremap = true, silent = true })
-
 
 -- vim.* settings
 vim.cmd.colorscheme "catppuccin"
