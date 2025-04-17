@@ -232,13 +232,23 @@ require("nvim-tree").setup({
     dotfiles = true,
   },
 })
-
 local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Space>e", function()
   vim.cmd("wincmd p")
 end, { noremap = true, silent = true })
+
+-- Keymaps
+local gay = vim.keymap.set
+local opts = function(desc)
+  return { noremap = true, silent = true, desc = desc }
+end
+
+-- Telescope
+gay("n", "<Space>gb", ":Telescope git_branches<CR>", opts("Git Branches"))
+gay("n", "<Space>gt", ":Telescope git_status<CR>", opts("Git Status"))
+gay("n", "<Space>th", ":Telescope find_files<CR>", opts("Find Files"))
 
 -- vim.* settings
 vim.cmd.colorscheme "catppuccin"
