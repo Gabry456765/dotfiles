@@ -70,21 +70,6 @@ require("lazy").setup({
   checker = { enabled = false },
 })
 
--- Snippet
-local ls = require("luasnip")
-local s = ls.snippet
-local t = ls.text_node
-local i = ls.insert_node
-
-ls.add_snippets("sh", {
-  s("if", {
-    t("if [ "), i(1), t(" ]; then"),
-    t({"", ""}),
-    i(2),
-    t({"", "fi"}),
-  }),
-})
-
 -- nvim-cmp
 local cmp = require("cmp")
 local luasnip = require("luasnip")
@@ -268,3 +253,6 @@ vim.cmd.set "timeout timeoutlen=3000 ttimeoutlen=100"
 vim.g.vimtex_view_method = 'zathura'
 vim.opt.wrap = true
 vim.opt.whichwrap:append "<>[]hl"
+
+-- Load (shit) more lua Files
+require("snippets.shell")
