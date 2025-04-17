@@ -67,6 +67,7 @@ require("lazy").setup({
     { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
     { "nvim-treesitter/nvim-treesitter", dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" } },
     { "ya2s/nvim-cursorline" },
+    { "romgrk/barbar.nvim", dependencies = { "lewis6991/gitsigns.nvim", "nvim-tree/nvim-web-devicons", }, }
   },
   checker = { enabled = false },
 })
@@ -238,6 +239,29 @@ require('nvim-cursorline').setup {
   }
 }
 
+
+-- Barbar
+vim.g.barbar_auto_setup = false
+require('barbar').setup {
+  animation = true,
+  clickable = true,
+  maximum_padding = 1,
+  minimum_padding = 1,
+  maximum_length = 30,
+  gitsigns = {
+    added = {enabled = true, icon = '+'},
+    changed = {enabled = true, icon = '~'},
+    deleted = {enabled = true, icon = '-'},
+  },
+  filetype = {
+    custom_colors = false,
+    enabled = true,
+  },
+  sidebar_filetypes = {
+    NvimTree = true,
+  },
+}
+
 -- Keymaps
 local gay = vim.keymap.set
 local opts = function(desc)
@@ -248,6 +272,43 @@ end
 gay("n", "<Space>gb", ":Telescope git_branches<CR>", opts("Git Branches"))
 gay("n", "<Space>gt", ":Telescope git_status<CR>", opts("Git Status"))
 gay("n", "<Space>th", ":Telescope find_files<CR>", opts("Find Files"))
+
+-- Barbar
+local map = vim.api.nvim_set_keymap
+local opts = { noremap = true, silent = true }
+
+-- Move to previous/next
+map('n', '<A-,>', '<Cmd>BufferPrevious<CR>', opts)
+map('n', '<A-.>', '<Cmd>BufferNext<CR>', opts)
+
+-- Goto buffer in position...
+map('n', '<A-1>', '<Cmd>BufferGoto 1<CR>', opts)
+map('n', '<A-2>', '<Cmd>BufferGoto 2<CR>', opts)
+map('n', '<A-3>', '<Cmd>BufferGoto 3<CR>', opts)
+map('n', '<A-4>', '<Cmd>BufferGoto 4<CR>', opts)
+map('n', '<A-5>', '<Cmd>BufferGoto 5<CR>', opts)
+map('n', '<A-6>', '<Cmd>BufferGoto 6<CR>', opts)
+map('n', '<A-7>', '<Cmd>BufferGoto 7<CR>', opts)
+map('n', '<A-8>', '<Cmd>BufferGoto 8<CR>', opts)
+map('n', '<A-9>', '<Cmd>BufferGoto 9<CR>', opts)
+map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
+
+-- Pin/unpin buffer
+map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
+
+-- Close buffer
+map('n', '<A-c>', '<Cmd>BufferClose<CR>', opts)
+
+-- Magic buffer-picking mode
+map('n', '<C-p>',   '<Cmd>BufferPick<CR>', opts)
+map('n', '<C-s-p>', '<Cmd>BufferPickDelete<CR>', opts)
+
+-- Sort automatically by...
+map('n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', opts)
+map('n', '<Space>bn', '<Cmd>BufferOrderByName<CR>', opts)
+map('n', '<Space>bd', '<Cmd>BufferOrderByDirectory<CR>', opts)
+map('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
+map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
 
 -- vim.* settings
 vim.cmd.colorscheme "catppuccin"
