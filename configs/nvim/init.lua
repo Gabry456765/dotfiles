@@ -266,5 +266,5 @@ vim.opt.clipboard = "unnamedplus"
 vim.g.mapleader = ' '
 vim.cmd.set "timeout timeoutlen=3000 ttimeoutlen=100"
 vim.g.vimtex_view_method = 'zathura'
-vim.opt.wrap = false
+vim.opt.wrap = true
 vim.opt.whichwrap:append "<>[]hl"
