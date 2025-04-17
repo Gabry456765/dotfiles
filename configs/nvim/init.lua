@@ -66,6 +66,7 @@ require("lazy").setup({
     { "windwp/nvim-autopairs" },
     { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
     { "nvim-treesitter/nvim-treesitter", dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" } },
+    { "ya2s/nvim-cursorline" },
   },
   checker = { enabled = false },
 })
@@ -222,6 +223,20 @@ vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = t
 vim.keymap.set("n", "<Space>e", function()
   vim.cmd("wincmd p")
 end, { noremap = true, silent = true })
+
+-- Nvim cursorline
+require('nvim-cursorline').setup {
+  cursorline = {
+    enable = true,
+    timeout = 1000,
+    number = false,
+  },
+  cursorword = {
+    enable = true,
+    min_length = 3,
+    hl = { underline = true },
+  }
+}
 
 -- Keymaps
 local gay = vim.keymap.set
