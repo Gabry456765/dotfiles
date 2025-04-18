@@ -331,6 +331,8 @@ vim.cmd.set "timeout timeoutlen=3000 ttimeoutlen=100"
 vim.g.vimtex_view_method = 'zathura'
 vim.opt.wrap = true
 vim.opt.whichwrap:append "<>[]hl"
+vim.opt.ignorecase = true
+vim.opt.smartcase = false
 
 -- Load (shit) more lua Files
 require("snippets.shell")
