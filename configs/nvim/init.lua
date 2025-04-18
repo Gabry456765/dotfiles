@@ -185,7 +185,10 @@ require("noice").setup({
 
 -- LuaLine
 require("lualine").setup({
-  options = { theme = "catppuccin" },
+  extensions = {'nvim-tree'},
+  options = { 
+    theme = "catppuccin" 
+  },
   sections = {
     lualine_c = { "filename" },
     lualine_x = { "encoding", "fileformat", "filetype" },
