@@ -1,43 +1,57 @@
 # Exports
-if [ -f "/etc/doas.conf" ]; then
-  export ROOT="doas"
-elif [ -f "/usr/bin/sudo" ]; then
-  export ROOT="sudo"
+# Android SDK
+if [ -d "$HOME/Android/Sdk/" ]; then
+  export ANDROID_HOME="$HOME/Android/Sdk"
+  export PATH="$PATH:$ANDROID_HOME/build-tools/35.0.1"
+fi
+
+EXPORT_PATH() {
+  local P="$1"
+
+  if [ -d "$P" ]; then
+    export PATH="$PATH:$P"
+  fi
+}
+
+EXPORT_PATH "$HOME/.local/bin/"
+EXPORT_PATH "$HOME/.bin/"
+EXPORT_PATH "$XDG_DATA_DIRS:/var/lib/flatpak/exports/share/"
+EXPORT_PATH "$HOME/.local/share/flatpak/exports/share/applications/"
+EXPORT_PATH "$HOME/.spicetify/"
+
+CMD_CHECK() {
+  command -v "$1" &>/dev/null
+}
+
+if [ -f "/etc/doas.conf" ] && "CMD_CHECK" "doas"; then
+  ROOT="doas"
+elif "CMD_CHECK" "sudo"; then
+  ROOT="sudo"
 else
   echo "WARNING: Doas and sudo not found!"
 fi
+
 export QT_QPA_PLATFORM="wayland"
-if [ -f "/usr/bin/nvim" ]; then
+
+if "CMD_CHECK" "nvim"; then
   export EDITOR="nvim"
   export VISUAL="nvim" 
-elif [ -f "/usr/bin/vim" ]; then
+elif "CMD_CHECK" "vim"; then
   export EDITOR="vim"
   export VISUAL="vim"
-elif [ -f "/usr/bin/nano" ]; then
+elif "CMD_CHECK" "nano"; then
   export EDITOR="nano"
   export VISUAL="nano"
 else
   echo "WARNING: neovim, vim and nano not found!"
 fi
-if [ -f "/usr/bin/librewolf" ]; then
+
+if "CMD_CHECK" "librewolf"; then
   export BROWSER="/usr/bin/librewolf" 
 fi
-export PATH="$PATH:$HOME/.bin:$HOME/.local/bin"
 
-# Flatpak
-if [ -f "/usr/bin/flatpak" ]; then
-  export XDG_DATA_DIRS="$XDG_DATA_DIRS:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share/applications"  
-fi
-
-# Android SDK
-if [ -d "$HOME/Android/sdk/" ]; then
-  export PATH="$PATH:$HOME/Android/sdk/"
-fi
-
-# Spicetify
-if [ -d "$HOME/.spicetify/" ]; then
-  export PATH="$PATH:$HOME/.spicetify"
-fi
+# Clang
+export CLANG_TYPE="aosp"
 
 # Oh My Zsh
 plugins=(
@@ -59,7 +73,6 @@ alias mount-sd="mountpoint-sdcrypt; $ROOT cryptsetup open /dev/sda3 sdcard-encry
 alias umount-sd="$ROOT umount /mnt/sdcard-encrypted; $ROOT cryptsetup close sdcard-encrypted; "
 
 if grep -q "gentoo" "/etc/os-release"; then
-  # portage
   alias ins="$ROOT emerge -navq"
   alias sup="$ROOT emerge --sync; $ROOT emerge -avq --changed-use --newuse --update --deep @world"
   alias up="$ROOT emerge -avq --changed-use --newuse --update --deep @world"
@@ -109,10 +122,12 @@ alias gca="git commit -s --amend"
 alias gmr="git merge -S --signoff --log"
 alias gms="git merge --skip"
 alias gma="git merge --abort"
+alias gre="git restore"
+alias grs="git restore --staged"
 
 # zsh
-alias zshrc="$EDITOR ~/.zshrc"
-alias zsh="source ~/.zshrc"
+alias zshrc="$EDITOR $HOME/.zshrc"
+alias zsh="source $HOME/.zshrc"
 
 # Commands
 command_not_found_handler() {
@@ -128,12 +143,12 @@ mountpoint-sdcrypt () {
 }
 
 # Fastfetch
-if [ -f "/usr/bin/fastfetch" ]; then
+if "CMD_CHECK" "fastfetch"; then
   fastfetch  
 fi
 
 # ccache
-if [ -f "/usr/bin/ccache" ]; then
+if "CMD_CHECK" "ccache"; then
   export USE_CCACHE="1"
   export CCACHE_EXEC="/usr/bin/ccache"
   if [ ! -d "$HOME/.ccache" ]; then
