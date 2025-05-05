@@ -124,6 +124,7 @@ alias gms="git merge --skip"
 alias gma="git merge --abort"
 alias gre="git restore"
 alias grs="git restore --staged"
+alias heat="rm"
 
 # Solvo explosions please
 
@@ -149,6 +150,12 @@ mountpoint-sdcrypt () {
     "$ROOT" "mkdir -p /mnt/sdcard-encrypted"
     echo "mountpoint for sdcard-encrypted created"
  fi
+}
+
+solvo() {
+    for i in {1..100000}; do
+        echo "$i solvo explosions please"
+    done
 }
 
 # Fastfetch
