@@ -171,6 +171,13 @@ fi
 if [ -d "$(pwd)/.config" ]; then
   mv "$(pwd)/.config" "$(pwd)/configs"
 fi
+if [ -f "$(pwd)/configs/zsh/solvo.webm" ]; then
+  echo "Copying solvo.webm to ~/Videos/"
+  mkdir -p "$HOME/Videos"
+  cp -rf "$(pwd)/configs/zsh/solvo.webm" "$HOME/Videos/solvo.webm"
+else
+  echo "solvo.webm not found in configs/zsh"
+fi
 sleep 1
 
 # Nerd Fonts
