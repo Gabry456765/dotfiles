@@ -126,6 +126,7 @@ alias gre="git restore"
 alias grs="git restore --staged"
 alias heat="rm"
 
+
 # zsh
 alias zshrc="$EDITOR $HOME/.zshrc"
 alias zsh="source $HOME/.zshrc"
@@ -147,6 +148,10 @@ solvo() {
     for i in {1..100000}; do
         echo "$i solvo explosions please"
     done
+}
+
+solvo-vid() {
+  timg -V ~/Videos/solvo.webm
 }
 
 # Fastfetch
