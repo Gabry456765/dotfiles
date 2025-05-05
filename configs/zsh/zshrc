@@ -125,6 +125,15 @@ alias gma="git merge --abort"
 alias gre="git restore"
 alias grs="git restore --staged"
 
+# Solvo explosions please
+
+solvo() {
+    for i in {1..100000}; do
+        echo "$i solvo explosions please"
+    done
+}
+
+
 # zsh
 alias zshrc="$EDITOR $HOME/.zshrc"
 alias zsh="source $HOME/.zshrc"
